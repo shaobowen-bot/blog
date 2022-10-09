@@ -1,0 +1,47 @@
+--server:
+  port: 8081
+# DataSource Config
+spring:
+  session:
+    store-type: redis
+  security:
+    user:
+      name: user
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_blog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+    ##springboot底层默认选择使用的数据源
+    type: com.zaxxer.hikari.HikariDataSource
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host: localhost
+    port: 6379
+    password: 423556774
+    jedis:
+      pool:
+        max-active: 100
+        max-wait:
+        max-idle: 8
+        min-idle: 0
+    timeout: 1000
+  cache-manager:
+    key-prefix: "shiro:cache:"
+    expire: 600     # 单位：秒
+    session-dao:
+
+markhub:
+  jwt:
+    # 加密秘钥
+    secret: f4e2e52034348f86b67cde581c0f9eb5
+    # token有效时长，7天，单位秒
+    expire: 604800
+    header: token
