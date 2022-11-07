@@ -40,9 +40,10 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(authorities != null){
+        if(authorities!=null){
             return authorities;
         }
+        //把permission中的String类型的权限信息封装成SimpleGrantedAuthority对象
         authorities = permissionValueList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         return authorities;
     }

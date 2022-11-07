@@ -51,13 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-/*    public static void main(String[] args) {
+    public static void main(String[] args) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encode = bCryptPasswordEncoder.encode("423556");
+        System.out.println(encode);
 
-        String encode1 = bCryptPasswordEncoder.encode("423556");
-        System.out.println("encode1:" + encode1);
-
-    }*/
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -67,8 +66,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //不通过Session获取SecurityContext
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-                .antMatchers("/user/hello").permitAll()
+                .authorizeRequests().antMatchers("/hello").hasAnyAuthority("test")
+                // 获取验证码接口 允许直接访问
+                .antMatchers("/user/getcode").permitAll()
+                // 注册接口 允许直接访问
+                .antMatchers("/user/register").permitAll()
                 // 对于登录接口 允许匿名访问
                 .antMatchers("/user/login").anonymous()
                 // swagger接口
@@ -82,8 +84,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(logoutSuccessHandlerImpl)
 //                .antMatchers("/testCors").hasAuthority("system:dept:list222")
                 // 除上面外的所有请求全部需要鉴权认证
-                .and().addFilter(new UsernamePasswordAuthenticationFilterImpl(authenticationManager,redisCache))
-                .addFilterBefore(tokenAuthenticationHandler, UsernamePasswordAuthenticationFilter.class);
+//                .and().addFilter(new UsernamePasswordAuthenticationFilterImpl(authenticationManager,redisCache))
+                .and().addFilterBefore(tokenAuthenticationHandler, UsernamePasswordAuthenticationFilter.class);
 
         //配置异常处理器
         http.exceptionHandling()

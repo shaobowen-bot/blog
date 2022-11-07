@@ -20,7 +20,7 @@ public class FastCodeAutoGenerator {
         String propath = System.getProperty("user.dir");
         System.out.println(propath);
 
-        FastAutoGenerator.create("jdbc:mysql://localhost:3306/db_blog?useSSL=true&useUnicode=true&serverTimezone=UCT", "root", "root").globalConfig(builder -> {
+        FastAutoGenerator.create("jdbc:mysql://localhost:3306/db_blogs?useSSL=true&useUnicode=true&serverTimezone=UCT", "root", "root").globalConfig(builder -> {
                     builder.author("bovan") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
                             .fileOverride() // 覆盖已生成文件
@@ -33,7 +33,7 @@ public class FastCodeAutoGenerator {
 //                            指定xml生成的路径
                             .pathInfo(Collections.singletonMap(OutputFile.xml, propath + "\\blog\\src\\main\\resources\\mapper\\"));
                 }).strategyConfig(builder -> {
-                    builder.addInclude("t_note", "t_note_tag", "t_user") // 设置需要生成的表名
+                    builder.addInclude("t_user_roles") // 设置需要生成的表名
                             .addTablePrefix("t_", "c_")
                             //自定义配置继承父包 HmBaseMapper  此类为我们公司扩展类
                             .mapperBuilder().build()

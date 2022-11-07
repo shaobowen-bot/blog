@@ -1,10 +1,8 @@
 package com.bovan.handler;
 
 
-import com.bovan.common.lang.R;
 import com.bovan.utils.JwtUtil;
 import com.bovan.utils.RedisCache;
-import com.bovan.utils.ResponseUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -32,19 +30,19 @@ public class LogoutHanderImpl implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         //获取token
-        String token = request.getHeader("token");
+        String token = request.getHeader("AccessToken");
 
         //解析token
-        String userId;
+        String userName;
         try {
             Claims claims = JwtUtil.parseJWT(token);
-            userId = claims.getSubject();
+            userName = claims.getSubject();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         //删除redis、securityConetxtHolder中的用户信息
-        String key = "login:" + userId;
+        String key = "login:" + userName;
         redisCache.deleteObject(key);
         SecurityContextHolder.clearContext();
 

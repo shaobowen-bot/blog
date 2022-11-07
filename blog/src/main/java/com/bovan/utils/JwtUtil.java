@@ -7,13 +7,16 @@ package com.bovan.utils;
  * @Date: 2022/10/13 09:51
  * @Description:
  */
+import com.bovan.domain.dto.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
@@ -24,7 +27,7 @@ import java.util.UUID;
 public class JwtUtil {
 
     //有效期为
-    public static final Long JWT_TTL = 60 * 60 *1000L;// 60 * 60 *1000  一个小时
+    public static final Long JWT_TTL = 60*60*1000L;// 60 * 60 *1000  一个小时
     //设置秘钥明文
     public static final String JWT_KEY = "bovanya";
 
@@ -32,6 +35,12 @@ public class JwtUtil {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         return token;
     }
+    /**
+     * 判断token是否过期
+     */
+//    public static boolean judgeTokenExpiration(String token){
+//
+//    }
 
     /**
      * 生成jwt
@@ -39,7 +48,7 @@ public class JwtUtil {
      * @return
      */
     public static String createJWT(String subject) {
-        JwtBuilder builder = getJwtBuilder(subject, null, getUUID());// 设置过期时间
+        JwtBuilder builder = getJwtBuilder(subject, JWT_TTL, getUUID());// 设置过期时间
         return builder.compact();
     }
 
@@ -50,9 +59,41 @@ public class JwtUtil {
      * @return
      */
     public static String createJWT(String subject, Long ttlMillis) {
-        JwtBuilder builder = getJwtBuilder(subject, ttlMillis, getUUID());// 设置过期时间
+        JwtBuilder builder = getJwtBuilder(subject, null, getUUID());// 设置过期时间
         return builder.compact();
     }
+    /**
+     * 判断token是否存在与有效
+     * @param jwtToken
+     * @return
+     */
+    public static boolean checkToken(String jwtToken) {
+        if (StringUtils.isEmpty(jwtToken)) return false;
+        try {
+            Jwts.parser().setSigningKey(JWT_KEY).parseClaimsJws(jwtToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 判断token是否存在与有效
+     * @param request
+     * @return
+     */
+    public static boolean checkToken(HttpServletRequest request) {
+        try {
+            String jwtToken = request.getHeader("Authorization");
+            if (StringUtils.isEmpty(jwtToken)) return false;
+            Jwts.parser().setSigningKey(JWT_KEY).parseClaimsJws(jwtToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
     private static JwtBuilder getJwtBuilder(String subject, Long ttlMillis, String uuid) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

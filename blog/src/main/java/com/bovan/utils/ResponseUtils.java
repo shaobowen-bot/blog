@@ -1,7 +1,6 @@
 package com.bovan.utils;
 
-import com.bovan.common.lang.R;
-import com.bovan.common.lang.ResponseResult;
+import com.bovan.common.lang.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,12 +16,12 @@ import java.io.IOException;
  * @Description:
  */
 public class ResponseUtils {
-    public static void out(HttpServletResponse response, R r) {
+    public static void out(HttpServletResponse response, Result result) {
         ObjectMapper mapper = new ObjectMapper();
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         try {
-            mapper.writeValue(response.getWriter(), r);
+            mapper.writeValue(response.getWriter(), result);
         } catch (IOException e) {
             e.printStackTrace();
         }

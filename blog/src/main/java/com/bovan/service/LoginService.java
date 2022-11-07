@@ -1,7 +1,10 @@
 package com.bovan.service;
 
-import com.bovan.common.lang.R;
+import com.bovan.common.lang.Result;
+import com.bovan.domain.dto.LoginDto;
 import com.bovan.domain.entity.User;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @BelongsProject: blog_boot
@@ -12,5 +15,5 @@ import com.bovan.domain.entity.User;
  */
 public interface LoginService {
 
-    public R login(User user);
+    public Result login(HttpServletResponse response, LoginDto loginDto);
 }
